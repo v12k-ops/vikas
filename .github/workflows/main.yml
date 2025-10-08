@@ -8,23 +8,20 @@ on:
 
 jobs:
   terraform:
-    name: Terraform Apply to Azure
-    runs-on: self-hosted   # 👈 Use self-hosted runner
-    permissions:
-      contents: read
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.8.5   # You can change version if needed h
+          terraform_version: 1.8.5
 
       - name: Terraform Init
         run: terraform init
@@ -33,9 +30,7 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan 
+        run: terraform plan -out=tfplan
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
-
-
+        run: terraform apply -auto-approve tfplan
